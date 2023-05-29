@@ -19,8 +19,16 @@ mainRoot.geometry("%dx%d+%d+%d"%(w,h,x,y))
 mainRoot.resizable(width=False, height=False)
 # ---------------------------------------------------
 
+# ---------------------------------------------------
+# copyright frame
+copyFrame=Frame(master=mainRoot, bg="#778899", width=500, height=15)
+copyFrame.pack(side="bottom")
+copyFrame.pack_propagate(0)
 
-
+# copyright label
+copyLabel=Label(master=copyFrame, text="@copyright-yasharZavaryRezaie-2023", bg="#778899")
+copyLabel.pack(side="right")
+# ---------------------------------------------------
 
 
 mainRoot.mainloop()
