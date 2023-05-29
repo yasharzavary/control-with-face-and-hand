@@ -43,6 +43,13 @@ checkButton.bind("<Leave>", lambda event: checkButton.config(bg="#FFF5EE"))
 checkButton.bind("<Button>", control)
 checkButton.pack()
 
+# exit button
+exitButton=Button(master=mainRoot, text="Exit", bg="#FFF5EE")
+exitButton.bind("<Enter>", lambda event: exitButton.config(bg="#F3E5AB"))
+exitButton.bind("<Leave>", lambda event: exitButton.config(bg="#FFF5EE"))
+exitButton.bind("<Button>", lambda event: mainRoot.destroy())
+exitButton.pack()
+
 # ---------------------------------------------------
 # ---------------------------------------------------
 # copyright frame
