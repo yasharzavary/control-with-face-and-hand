@@ -34,14 +34,32 @@ passEntry=Entry(master=mainRoot)
 passEntry.pack()
 
 # control part
+# -------------------------------
 def control(event):
     pass
+
+
 
 checkButton=Button(master=mainRoot, text="check", bg="#FFF5EE")
 checkButton.bind("<Enter>", lambda event: checkButton.config(bg="#F3E5AB"))
 checkButton.bind("<Leave>", lambda event: checkButton.config(bg="#FFF5EE"))
 checkButton.bind("<Button>", control)
 checkButton.pack()
+# -------------------------------
+# -------------------------------
+# setting part
+def setting(event):
+    pass
+
+
+# set button
+setButton=Button(master=mainRoot, text="setting", bg="#FFF5EE")
+setButton.bind("<Enter>", lambda event: setButton.config(bg="#F3E5AB"))
+setButton.bind("<Leave>", lambda event: setButton.config(bg="#FFF5EE"))
+setButton.bind("<Button>", setting)
+setButton.pack()
+# -------------------------------
+
 
 # exit button
 exitButton=Button(master=mainRoot, text="Exit", bg="#FFF5EE")
