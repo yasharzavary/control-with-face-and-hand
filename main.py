@@ -30,5 +30,17 @@ copyLabel=Label(master=copyFrame, text="@copyright-yasharZavaryRezaie-2023", bg=
 copyLabel.pack(side="right")
 # ---------------------------------------------------
 
+# ---------------------------------------------------
+# my mouse move function
+def mouseProcess(event):
+    pass
+
+mouseMoveButton=Button(master=mainRoot, text="mouse mode", bg="#FFF5EE", fg="black")
+mouseMoveButton.bind("<Enter>", lambda event: mouseMoveButton.config(bg="#F3E5AB"))
+mouseMoveButton.bind("<Leave>", lambda event: mouseMoveButton.config(bg="#FFF5EE"))
+mouseMoveButton.bind("<Button>", mouseProcess)
+mouseMoveButton.pack()
+# ----------------------------------------------------
+
 
 mainRoot.mainloop()
