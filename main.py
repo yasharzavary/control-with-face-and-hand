@@ -1,5 +1,5 @@
 from tkinter import *
-
+from tkinter import colorchooser
 
 # ----------------------------------------------------------------------
 # my mainroot part
@@ -49,7 +49,44 @@ checkButton.pack()
 # -------------------------------
 # setting part
 def setting(event):
-    pass
+    def changeColor(event):
+        colorCode=colorchooser.askcolor(title="choose color")
+        mainRoot.config(bg=colorCode[1])
+    def selectMouseSensivity(event):
+        pass
+    
+    def selectVolumeSensivity(event):
+        pass
+    # setRoot 
+    setRoot=Tk()
+    setRoot.title("setting")
+    setRoot.iconbitmap("icons\\setting.ico")
+    
+    w=250
+    h=250
+    setRoot.geometry("%dx%d+%d+%d"%(w,h,200,200))
+    setRoot.resizable(width=False, height=False)
+    
+    changeColorButton=Button(master=setRoot, text="change background color", bg="#FFF5EE")
+    changeColorButton.bind("<Enter>", lambda event: changeColorButton.config(bg="#F3E5AB"))
+    changeColorButton.bind("<Leave>", lambda event: changeColorButton.config(bg="#FFF5EE"))
+    changeColorButton.bind("<Button>", changeColor)
+    changeColorButton.pack()
+    
+    mouseSensitivityButton=Button(master=setRoot, text="set mouse sensitivity", bg="#FFF5EE")
+    mouseSensitivityButton.bind("<Enter>", lambda event: mouseSensitivityButton.config(bg="#F3E5AB"))
+    mouseSensitivityButton.bind("<Leave>", lambda event: mouseSensitivityButton.config(bg="#FFF5EE"))
+    mouseSensitivityButton.bind("<Button>", selectMouseSensivity)
+    mouseSensitivityButton.pack()
+    
+    volumeSensivityButton=Button(master=setRoot, text="set volume sensitivity", bg="#FFF5EE")
+    volumeSensivityButton.bind("<Enter>", lambda event: volumeSensivityButton.config(bg="#F3E5AB"))
+    volumeSensivityButton.bind("<Leave>", lambda event: volumeSensivityButton.config(bg="#FFF5EE"))
+    volumeSensivityButton.bind("<Button>", selectVolumeSensivity)
+    volumeSensivityButton.pack()
+    
+    
+    setRoot.mainloop()
 
 
 # set button
@@ -76,7 +113,7 @@ copyFrame.pack(side="bottom")
 copyFrame.pack_propagate(0)
 
 # copyright label
-copyLabel=Label(master=copyFrame, text="@copyright-yasharZavaryRezaie-2023", bg="#778899")
+copyLabel=Label(master=copyFrame, text="@copyright-YasharZavaryRezaie-2023", bg="#778899")
 copyLabel.pack(side="right")
 # ---------------------------------------------------
 
