@@ -18,6 +18,7 @@ y=(sh/2)-(h/2)
 mainRoot.geometry("%dx%d+%d+%d"%(w,h,x,y))
 mainRoot.resizable(width=False, height=False)
 # ---------------------------------------------------
+# ---------------------------------------------------
 # mySecurityPart
 
 nameLabel=Label(master=mainRoot, text="Name:")
@@ -32,7 +33,17 @@ passLabel.pack()
 passEntry=Entry(master=mainRoot)
 passEntry.pack()
 
+# control part
+def control(event):
+    pass
 
+checkButton=Button(master=mainRoot, text="check", bg="#FFF5EE")
+checkButton.bind("<Enter>", lambda event: checkButton.config(bg="#F3E5AB"))
+checkButton.bind("<Leave>", lambda event: checkButton.config(bg="#FFF5EE"))
+checkButton.bind("<Button>", control)
+checkButton.pack()
+
+# ---------------------------------------------------
 # ---------------------------------------------------
 # copyright frame
 copyFrame=Frame(master=mainRoot, bg="#778899", width=500, height=15)
@@ -53,7 +64,7 @@ mouseMoveButton=Button(master=mainRoot, text="mouse mode", bg="#FFF5EE", fg="bla
 mouseMoveButton.bind("<Enter>", lambda event: mouseMoveButton.config(bg="#F3E5AB"))
 mouseMoveButton.bind("<Leave>", lambda event: mouseMoveButton.config(bg="#FFF5EE"))
 mouseMoveButton.bind("<Button>", mouseProcess)
-mouseMoveButton.pack()
+# mouseMoveButton.pack()
 # ----------------------------------------------------
 
 
