@@ -18,6 +18,20 @@ y=(sh/2)-(h/2)
 mainRoot.geometry("%dx%d+%d+%d"%(w,h,x,y))
 mainRoot.resizable(width=False, height=False)
 # ---------------------------------------------------
+# mySecurityPart
+
+nameLabel=Label(master=mainRoot, text="Name:")
+nameLabel.pack()
+
+nameEntry=Entry(master=mainRoot)
+nameEntry.pack()
+
+passLabel=Label(master=mainRoot, text="Password:")
+passLabel.pack()
+
+passEntry=Entry(master=mainRoot)
+passEntry.pack()
+
 
 # ---------------------------------------------------
 # copyright frame
