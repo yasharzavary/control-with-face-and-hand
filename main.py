@@ -40,11 +40,12 @@ def control(event):
 
 
 
-checkButton=Button(master=mainRoot, text="check", bg="#FFF5EE")
+checkButton=Button(master=mainRoot, text="sign in", bg="#FFF5EE")
 checkButton.bind("<Enter>", lambda event: checkButton.config(bg="#F3E5AB"))
 checkButton.bind("<Leave>", lambda event: checkButton.config(bg="#FFF5EE"))
 checkButton.bind("<Button>", control)
 checkButton.pack()
+
 # -------------------------------
 # -------------------------------
 # setting part
@@ -116,6 +117,24 @@ copyFrame.pack_propagate(0)
 copyLabel=Label(master=copyFrame, text="@copyright-YasharZavaryRezaie-2023", bg="#778899")
 copyLabel.pack(side="right")
 # ---------------------------------------------------
+# ---------------------------------------------------
+# sign up part
+def signUp(event):
+    pass
+
+# signup frame
+signUpFrame=Frame(master=mainRoot, width=500, height=30)
+signUpFrame.pack(side='bottom')
+signUpFrame.pack_propagate(0)
+
+signUpLabel=Label(master=signUpFrame, text="don't have a account?")
+signUpLabel.pack(side="left")
+
+signupButton=Button(master=signUpFrame, text="sign up", bg="#FFF5EE")
+signupButton.bind("<Enter>", lambda event: signupButton.config(bg="#F3E5AB"))
+signupButton.bind("<Leave>", lambda event: signupButton.config(bg="#FFF5EE"))
+signupButton.bind("<Button>", signUp)
+signupButton.pack(side="left")
 
 # ---------------------------------------------------
 # my mouse move function
