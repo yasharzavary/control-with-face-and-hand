@@ -120,7 +120,72 @@ copyLabel.pack(side="right")
 # ---------------------------------------------------
 # sign up part
 def signUp(event):
-    pass
+    signUpRoot=Tk()
+    signUpRoot.title("Sign Up")
+    signUpRoot.iconbitmap("icons\\signUp.ico")
+    w=250
+    h=250
+    signUpRoot.geometry("%dx%d+%d+%d"%(w, h , 1000, 300))
+    
+    # ---------------------------------------------------
+    # name frame and label
+    newNameFrame=Frame(master=signUpRoot, width=500, height=30)
+    newNameFrame.pack(side="top")
+    
+    newNameLabel=Label(master=newNameFrame, text="Full name:")
+    newNameLabel.pack(side="left")
+    
+    newNameEntry=Entry(master=newNameFrame)
+    newNameEntry.pack(side="left")
+    # ---------------------------------------------------
+    # ---------------------------------------------------
+    # user name part
+    
+    newUserNameFrame=Frame(master=signUpRoot, width=500, height=30)
+    newUserNameFrame.pack(side="top")
+    
+    newUserNameLabel=Label(master=newUserNameFrame, text="User name:")
+    newUserNameLabel.pack(side="left")
+    
+    newUserNameEntry=Entry(master=newUserNameFrame)
+    newUserNameEntry.pack(side="left")
+    
+    # ---------------------------------------------------
+    # ---------------------------------------------------
+    # new password entry
+    
+    newPassFrame=Frame(master=signUpRoot, width=500, height=30)
+    newPassFrame.pack(side="top")
+    
+    newPassLabel=Label(master=newPassFrame, text="password:")
+    newPassLabel.pack(side="left")
+    
+    newPassEntry=Entry(master=newPassFrame)
+    newPassEntry.pack(side="left")
+    # -----------------------------------------------------
+    # -----------------------------------------------------
+    # mobile phone entry
+    newPhoneFrame=Frame(master=signUpRoot, width=500, height=30)
+    newPhoneFrame.pack(side="top")
+    
+    newPhoneLabel=Label(master=newPhoneFrame, text="phone number:")
+    newPhoneLabel.pack(side="left")
+    
+    newPhoneEntry=Entry(master=newPhoneFrame)
+    newPhoneEntry.pack(side="left")
+    # -----------------------------------------------------
+    def signUpControl(event):
+        pass
+    
+    OkButton=Button(master=signUpRoot, text="sign up")
+    OkButton.bind("<Enter>", lambda event: OkButton.config(bg="#F3E5AB"))
+    OkButton.bind("<Leave>", lambda event: OkButton.config(bg="#FFF5EE"))
+    OkButton.bind("<Button>", signUpControl)
+    OkButton.pack()
+    
+    
+    
+    signUpRoot.mainloop()
 
 # signup frame
 signUpFrame=Frame(master=mainRoot, width=500, height=30)
