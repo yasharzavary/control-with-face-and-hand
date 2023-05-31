@@ -205,7 +205,7 @@ def signUp(event):
                     noError=True
                     for i in sqlcursor:
                         if i[2]==username:
-                            messagebox.showinfo('Hint', 'uername is already sign up')
+                            messagebox.showinfo('Hint', 'username is already sign up')
                             noError=False
                             break
                         if i[4]==phone:
@@ -213,8 +213,16 @@ def signUp(event):
                             noError=False
                             break
                     if noError:
-                        pass
-                       
+                        sqlcursor.execute('select max(idCode) from person')
+                        for i in sqlcursor:
+                            maxId=i[0]+1
+                        query="""insert into person (idCode, fullName, userName, pPassword, cellphoneNum)
+                                values(%s,%s,%s,%s,%s)
+                                """
+                        addList=[(maxId, fullname, username, password, phone)]
+                        sqlcursor.executemany(query, addList)
+                        messagebox.showinfo('success', 'sign up successfully done')
+                    conn.commit()   
             except Error as err:
                 messagebox.showerror('Error', 'we can\'t connect to the server, please try again later')
                 print(err)
