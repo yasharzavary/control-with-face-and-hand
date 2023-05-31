@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import colorchooser
+from mysql.connector import Connect, Error
 
 # ----------------------------------------------------------------------
 # my mainroot part
@@ -175,7 +176,11 @@ def signUp(event):
     newPhoneEntry.pack(side="left")
     # -----------------------------------------------------
     def signUpControl(event):
-        pass
+        try:
+            with Connect(user="root", port=3306, password="Yasharzavary360", database='computercontrol') as conn:
+                passLabel
+        except Error as err:
+            print(err)
     
     OkButton=Button(master=signUpRoot, text="sign up")
     OkButton.bind("<Enter>", lambda event: OkButton.config(bg="#F3E5AB"))
