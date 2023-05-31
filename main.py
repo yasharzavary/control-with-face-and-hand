@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import colorchooser
+from tkinter import messagebox
 from mysql.connector import Connect, Error
+import re
 
 # ----------------------------------------------------------------------
 # my mainroot part
@@ -169,18 +171,36 @@ def signUp(event):
     newPhoneFrame=Frame(master=signUpRoot, width=500, height=30)
     newPhoneFrame.pack(side="top")
     
-    newPhoneLabel=Label(master=newPhoneFrame, text="phone number:")
+    newPhoneLabel=Label(master=newPhoneFrame, text="phone number: +98")
     newPhoneLabel.pack(side="left")
     
     newPhoneEntry=Entry(master=newPhoneFrame)
     newPhoneEntry.pack(side="left")
     # -----------------------------------------------------
     def signUpControl(event):
-        try:
-            with Connect(user="root", port=3306, password="Yasharzavary360", database='computercontrol') as conn:
-                passLabel
-        except Error as err:
-            print(err)
+        # get data's of user
+        username=newUserNameEntry.get()
+        fullname=newNameEntry.get()
+        password=newPassEntry.get()
+        phone=newPhoneEntry.get()
+        
+        # control them with standards
+        if username=="" or password=="" or phone=="" or fullname=="":
+            messagebox.showerror('Error', 'slots can\'t be empty')
+        elif re.search(r"\d", fullname):
+            messagebox.showerror('Error', 'you\'r full name can\'t have number in it' )
+        elif re.search(r"\d\D+", username):
+            messagebox.showerror('Error', 'you can\'t write number in first or middle of your user name')
+        elif len(phone)!=10 or re.search(r'\D', phone):
+            messagebox.showerror('Error', 'phone number is invalid')
+        
+        else:
+            # if everything is ok, it come to here
+            try:
+                with Connect(user="root", port=3306, password="Yasharzavary360", database='computercontrol') as conn:
+                    pass
+            except Error as err:
+                messagebox.showerror('Error', 'we can\'t connect to the database, please try again later')
     
     OkButton=Button(master=signUpRoot, text="sign up")
     OkButton.bind("<Enter>", lambda event: OkButton.config(bg="#F3E5AB"))
