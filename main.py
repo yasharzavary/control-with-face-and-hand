@@ -56,6 +56,8 @@ def setting(event):
     def changeColor(event):
         colorCode=colorchooser.askcolor(title="choose color")
         mainRoot.config(bg=colorCode[1])
+        nameLabel.config(bg=colorCode[1])
+        passLabel.config(bg=colorCode[1])
     def selectMouseSensivity(event):
         pass
     
@@ -188,7 +190,7 @@ def signUp(event):
         if username=="" or password=="" or phone=="" or fullname=="":
             messagebox.showerror('Error', 'slots can\'t be empty')
         elif re.search(r"\d", fullname):
-            messagebox.showerror('Error', 'you\'r full name can\'t have number in it' )
+            messagebox.showerror('Error', 'you\'r name can\'t have number in it' )
         elif re.search(r"\d\D+", username):
             messagebox.showerror('Error', 'you can\'t write number in first or middle of your user name')
         elif len(phone)!=10 or re.search(r'\D', phone):
@@ -198,9 +200,24 @@ def signUp(event):
             # if everything is ok, it come to here
             try:
                 with Connect(user="root", port=3306, password="Yasharzavary360", database='computercontrol') as conn:
-                    pass
+                    sqlcursor=conn.cursor()
+                    sqlcursor.execute('select * from person')
+                    noError=True
+                    for i in sqlcursor:
+                        if i[2]==username:
+                            messagebox.showinfo('Hint', 'uername is already sign up')
+                            noError=False
+                            break
+                        if i[4]==phone:
+                            messagebox.showinfo('Hint', 'this phone number is already registered')
+                            noError=False
+                            break
+                    if noError:
+                        pass
+                       
             except Error as err:
-                messagebox.showerror('Error', 'we can\'t connect to the database, please try again later')
+                messagebox.showerror('Error', 'we can\'t connect to the server, please try again later')
+                print(err)
     
     OkButton=Button(master=signUpRoot, text="sign up")
     OkButton.bind("<Enter>", lambda event: OkButton.config(bg="#F3E5AB"))
