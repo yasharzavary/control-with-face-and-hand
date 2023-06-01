@@ -39,10 +39,38 @@ passEntry.pack()
 # control part
 # -------------------------------
 def control(event):
-    pass
-
-
-
+    # our main program for controlling the computer
+    def mainProgram():
+        pass
+    # a variable for set true or false result
+    isOk=False
+    # get data
+    controlName=nameEntry.get()
+    controlPass=passEntry.get()
+    # controlling part
+    if re.search(r'\d\D+', controlName):
+        messagebox.showerror('Error', 'username can\'t have number in first or middle of name')
+    elif controlName=='' or controlPass=='':
+        messagebox.showerror('Error', 'uername or password can\'t be empty')  
+    else:
+        try:
+            with Connect(user='root', port=3306, password='Yasharzavary360', database='computercontrol') as conn:
+                sqlCursor=conn.cursor(buffered=True)
+                sqlCursor.execute("select * from person")
+                for i in sqlCursor:
+                    if i[2]==controlName and i[3]==controlPass:
+                        isOk=True
+                        break
+                conn.commit()
+        except Error as err:
+            messagebox.showinfo('info', 'connection with server is lost...please try again later')
+            print(err)
+        if isOk:
+            mainProgram()
+        else:
+            messagebox.showerror('Error', 'password or username is incorrect')
+        
+    
 checkButton=Button(master=mainRoot, text="sign in", bg="#FFF5EE")
 checkButton.bind("<Enter>", lambda event: checkButton.config(bg="#F3E5AB"))
 checkButton.bind("<Leave>", lambda event: checkButton.config(bg="#FFF5EE"))
@@ -186,6 +214,7 @@ def signUp(event):
         password=newPassEntry.get()
         phone=newPhoneEntry.get()
         
+        # --------------------------------------------------------
         # control them with standards
         if username=="" or password=="" or phone=="" or fullname=="":
             messagebox.showerror('Error', 'slots can\'t be empty')
@@ -195,14 +224,17 @@ def signUp(event):
             messagebox.showerror('Error', 'you can\'t write number in first or middle of your user name')
         elif len(phone)!=10 or re.search(r'\D', phone):
             messagebox.showerror('Error', 'phone number is invalid')
-        
+        # -----------------------------------------------------------
         else:
             # if everything is ok, it come to here
             try:
+                # connecting to the database to add new user
                 with Connect(user="root", port=3306, password="Yasharzavary360", database='computercontrol') as conn:
                     sqlcursor=conn.cursor()
                     sqlcursor.execute('select * from person')
                     noError=True
+                    # control that the new person's data not in the database
+                    # ------------------------------------------------------------
                     for i in sqlcursor:
                         if i[2]==username:
                             messagebox.showinfo('Hint', 'username is already sign up')
@@ -212,17 +244,24 @@ def signUp(event):
                             messagebox.showinfo('Hint', 'this phone number is already registered')
                             noError=False
                             break
+                    # -----------------------------------------------------------
+                    # -----------------------------------------------------------
                     if noError:
                         sqlcursor.execute('select max(idCode) from person')
+                        # get max id for set new person's id code
                         for i in sqlcursor:
                             maxId=i[0]+1
+                        
+                        # our adding part for the new person
                         query="""insert into person (idCode, fullName, userName, pPassword, cellphoneNum)
                                 values(%s,%s,%s,%s,%s)
                                 """
                         addList=[(maxId, fullname, username, password, phone)]
                         sqlcursor.executemany(query, addList)
                         messagebox.showinfo('success', 'sign up successfully done')
-                    conn.commit()   
+                    conn.commit()  
+                    # ------------------------------------------------------------
+            # our error part for the server part 
             except Error as err:
                 messagebox.showerror('Error', 'we can\'t connect to the server, please try again later')
                 print(err)
