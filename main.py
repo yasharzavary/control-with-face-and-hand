@@ -41,7 +41,39 @@ passEntry.pack()
 def control(event):
     # our main program for controlling the computer
     def mainProgram():
-        pass
+        def justMouse(event):
+            pass
+        def justVolume(event):
+            pass
+        mainProgramRoot=Tk()
+        mainProgramRoot.title('controling program')
+        mainProgramRoot.iconbitmap('icons/mainProgramRoot.ico')
+        mainProgramRoot.geometry('%dx%d+%d+%d'%(400,200,600,400))
+        
+        welcomeLabel=Label(master=mainProgramRoot, text='Welcome to the control program')
+        welcomeLabel.pack()
+        
+        hintLabel=Label(
+                        master=mainProgramRoot,
+                        text='you can choose mouse or volume control or both of them\nhint: if you set both, program will lose performance'
+                        
+                        )
+        hintLabel.pack()
+        
+        justMouseControl=Button(master=mainProgramRoot, text='mouse control', bg='#FFF5EE')
+        justMouseControl.bind('<Enter>', lambda event: justMouseControl.config(bg='#F3E5AB'))
+        justMouseControl.bind('<Leave>', lambda event: justMouseControl.config(bg='#FFF5EE'))
+        justMouseControl.bind('<Button>', justMouse)
+        justMouseControl.pack()
+        
+        
+        justVolumeControl=Button(master=mainProgramRoot, text='volume control', bg='#FFF5EE')
+        justVolumeControl.bind('<Enter>', lambda event: justVolumeControl.config(bg='#F3E5AB'))
+        justVolumeControl.bind('<Leave>', lambda event: justVolumeControl.config(bg='#FFF5EE'))
+        justVolumeControl.bind('<Button>', justVolume)
+        justVolumeControl.pack()
+        
+        mainProgramRoot.mainloop()
     # a variable for set true or false result
     isOk=False
     # get data
