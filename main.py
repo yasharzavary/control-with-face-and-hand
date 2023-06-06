@@ -2,7 +2,8 @@ from tkinter import *
 from tkinter import colorchooser
 from tkinter import messagebox
 from mysql.connector import Connect, Error
-import re
+import re, time
+import cv2
 
 # ----------------------------------------------------------------------
 # my mainroot part
@@ -39,10 +40,21 @@ passEntry.pack()
 # control part
 # -------------------------------
 def control(event):
+    mosueClickSens=0.01
     # our main program for controlling the computer
     def mainProgram():
         def justMouse(event):
-            pass
+            cam=cv2.VideoCapture(0)
+            firstTime=time.time()
+            while True:
+                if time.time() - firstTime >= 10:
+                    cv2.destroyAllWindows()
+                    break   
+                _, frame=cam.read()
+                frame=cv2.flip(frame, 1)
+                
+                cv2.imshow('mosue program', frame)
+                cv2.waitKey(1)
         def justVolume(event):
             pass
         mainProgramRoot=Tk()
@@ -53,7 +65,7 @@ def control(event):
         welcomeLabel=Label(master=mainProgramRoot, text='Welcome to the control program')
         welcomeLabel.pack()
         
-        hintLabel=Label(
+        hintLabel=Label(    
                         master=mainProgramRoot,
                         text='you can choose mouse or volume control or both of them\nhint: if you set both, program will lose performance'
                         
