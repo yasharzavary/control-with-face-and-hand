@@ -46,12 +46,17 @@ def control(event):
         def justMouse(event):
             cam=cv2.VideoCapture(0)
             firstTime=time.time()
+            faceDetector=mp.solutions.face_mesh.FaceMesh()
             while True:
                 if time.time() - firstTime >= 10:
                     cv2.destroyAllWindows()
                     break   
                 _, frame=cam.read()
                 frame=cv2.flip(frame, 1)
+                progressImg=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                outputImg=faceDetector.process(progressImg)
+                landmarks=outputImg.multi_face_landmarks
+                
                 
                 cv2.imshow('mosue program', frame)
                 cv2.waitKey(1)
