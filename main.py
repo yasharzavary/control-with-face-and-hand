@@ -2,8 +2,8 @@ from tkinter import *
 from tkinter import colorchooser
 from tkinter import messagebox
 from mysql.connector import Connect, Error
-import re, time
-import cv2
+import re, time, cv2
+import mediapipe as mp
 
 # ----------------------------------------------------------------------
 # my mainroot part
