@@ -45,31 +45,45 @@ def control(event):
     # our main program for controlling the computer
     def mainProgram():
         def justMouse(event):
+            # reading camera
             cam=cv2.VideoCapture(0)
+            # read time for set timer for the camera reading
             firstTime=time.time()
+            # get our AI for face detection
             faceDetector=mp.solutions.face_mesh.FaceMesh(refine_landmarks=True)
+            # make on loop for work on frames
             while True:
+                # time condition
                 if time.time() - firstTime >= 10:
                     cv2.destroyAllWindows()
-                    break   
+                    break  
+                # reading the camera 
                 _, frame=cam.read()
+                # get shape for our sizing
                 frameY, frameX, _=frame.shape
                 frame=cv2.flip(frame, 1)
+                # change color for better process
                 progressImg=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 outputImg=faceDetector.process(progressImg)
                 screenw, screenh=pag.size()
+                # get landmarks for progressing
                 outputlandmarks=outputImg.multi_face_landmarks
                 if outputlandmarks:
                     landmarks=outputlandmarks[0].landmark
+                    # get right eye landmarks for progress
                     for lid, landmark in enumerate(landmarks[474:478]):
                         x=int(landmark.x* frameX)
                         y=int(landmark.y* frameY)
+                        # draw circle for the right eye
                         cv2.circle(frame, (x,y), 3, (0,255,0))
+                        # mouse moving part
                         if lid == 1:
                             mX=landmark.x*screenw
                             mY=landmark.y*screenh
                             pag.moveTo(mX,mY)
+                    # get landmark for click
                     clickList=[landmarks[145], landmarks[159]]
+                    # clicking part
                     if(clickList[0].y - clickList[1].y < mosueClickSens):
                         pag.click()
                         pag.sleep(1)
@@ -77,6 +91,7 @@ def control(event):
                 cv2.waitKey(1)
         def justVolume(event):
             pass
+        # our main program root
         mainProgramRoot=Tk()
         mainProgramRoot.title('controling program')
         mainProgramRoot.iconbitmap('icons/mainProgramRoot.ico')
@@ -146,12 +161,50 @@ checkButton.pack()
 # setting part
 def setting(event):
     def changeColor(event):
+        # my background color changer
         colorCode=colorchooser.askcolor(title="choose color")
         mainRoot.config(bg=colorCode[1])
         nameLabel.config(bg=colorCode[1])
         passLabel.config(bg=colorCode[1])
     def selectMouseSensivity(event):
-        pass
+        def Senscontrol(event):
+            newSens=newSensEntry.get()
+            def changer():
+                global mosueClickSens
+                mosueClickSens=float(newSens)
+            if re.search(r"-\d", newSens):
+                messagebox.showerror('Error', 'your sens must be in range 0-1')
+            elif re.search(r"\D", newSens):
+                messagebox.showerror('Error', 'your sens must be numeric')
+            elif float(newSens) > 1 or float(newSens) < 0:
+                messagebox.showerror('Error', 'your sens must be in range 0-1')
+            else:
+                changer()
+        # mouse sensitivity root
+        mouseSensRoot=Tk()
+        mouseSensRoot.title('sens change')
+        mouseSensRoot.geometry('%dx%d+%d+%d'%(600,200,400,900))
+        
+        newSensFrame=Frame(master=mouseSensRoot)
+        newSensFrame.pack(side='top')
+        
+        # my new sens label
+        newSensLabel=Label(master=newSensFrame, text='new sensitivity(<1): ')
+        newSensLabel.pack(side='left')
+        
+        # my sens entry
+        newSensEntry=Entry(master=newSensFrame)
+        newSensEntry.pack()
+        
+        # change button
+        changeButton=Button(master=mouseSensRoot, text="change", bg="#FFF5EE")
+        changeButton.bind("<Enter>", lambda event: changeButton.config(bg="#F3E5AB"))
+        changeButton.bind("<Leave>", lambda event: changeButton.config(bg="#FFF5EE"))
+        changeButton.bind("<Button>", Senscontrol)
+        changeButton.pack()
+        
+        
+        mouseSensRoot.mainloop()
     
     def selectVolumeSensivity(event):
         pass
