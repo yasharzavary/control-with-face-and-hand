@@ -46,19 +46,25 @@ def control(event):
         def justMouse(event):
             cam=cv2.VideoCapture(0)
             firstTime=time.time()
-            faceDetector=mp.solutions.face_mesh.FaceMesh()
+            faceDetector=mp.solutions.face_mesh.FaceMesh(refine_landmarks=True)
             while True:
                 if time.time() - firstTime >= 10:
                     cv2.destroyAllWindows()
                     break   
                 _, frame=cam.read()
+                frameY, frameX, _=frame.shape
                 frame=cv2.flip(frame, 1)
                 progressImg=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 outputImg=faceDetector.process(progressImg)
-                landmarks=outputImg.multi_face_landmarks
-                
-                
-                cv2.imshow('mosue program', frame)
+                outputlandmarks=outputImg.multi_face_landmarks
+                if outputlandmarks:
+                    landmarks=outputlandmarks[0].landmark
+                    for landmark in landmarks[474:478]:
+                        x=int(landmark.x* frameX)
+                        y=int(landmark.y* frameY)
+                        cv2.circle(frame, (x,y), 3, (0,255,0))
+
+                cv2.imshow('mouse program', frame)
                 cv2.waitKey(1)
         def justVolume(event):
             pass
