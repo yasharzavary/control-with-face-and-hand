@@ -90,7 +90,18 @@ def control(event):
                 cv2.imshow('mouse program', frame)
                 cv2.waitKey(1)
         def justVolume(event):
-            pass
+            # open the camera
+            cam=cv2.VideoCapture(0)
+            startTime=time.time()
+            while True:
+                if startTime-startTime > 10:
+                    cv2.destroyAllWindows()
+                    break
+                _, frame=cam.read()
+                frame=cv2.flip(frame, 1)
+                
+                cv2.imshow('volume control', frame)
+                cv2.waitKey(1)
         # our main program root
         mainProgramRoot=Tk()
         mainProgramRoot.title('controling program')
@@ -172,9 +183,9 @@ def setting(event):
             def changer():
                 global mosueClickSens
                 mosueClickSens=float(newSens)
-            if re.search(r"-\d", newSens):
-                messagebox.showerror('Error', 'your sens must be in range 0-1')
-            elif re.search(r"\D", newSens):
+            if newSens=='':
+                messagebox.showerror('Error', 'sens can\'t be empty')  
+            elif re.search(r"[!\"#$%&'()*,/:;<=>?@[\]^_`{|}~ A-z a-z]", newSens):
                 messagebox.showerror('Error', 'your sens must be numeric')
             elif float(newSens) > 1 or float(newSens) < 0:
                 messagebox.showerror('Error', 'your sens must be in range 0-1')
