@@ -4,6 +4,7 @@ from tkinter import messagebox
 from mysql.connector import Connect, Error
 import re, time, cv2
 import mediapipe as mp
+import pyautogui as pag
 
 # ----------------------------------------------------------------------
 # my mainroot part
@@ -13,8 +14,8 @@ mainRoot.title('controlling system')
 
 # ---------------------------------------------------
 # size of main root
-w=500
-h=500
+w=1000
+h=1000
 sw=mainRoot.winfo_screenwidth()
 sh=mainRoot.winfo_screenheight()
 x=(sw/2)-(w/2)
@@ -39,8 +40,8 @@ passEntry.pack()
 
 # control part
 # -------------------------------
+mosueClickSens=0.01
 def control(event):
-    mosueClickSens=0.01
     # our main program for controlling the computer
     def mainProgram():
         def justMouse(event):
@@ -56,14 +57,22 @@ def control(event):
                 frame=cv2.flip(frame, 1)
                 progressImg=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 outputImg=faceDetector.process(progressImg)
+                screenw, screenh=pag.size()
                 outputlandmarks=outputImg.multi_face_landmarks
                 if outputlandmarks:
                     landmarks=outputlandmarks[0].landmark
-                    for landmark in landmarks[474:478]:
+                    for lid, landmark in enumerate(landmarks[474:478]):
                         x=int(landmark.x* frameX)
                         y=int(landmark.y* frameY)
                         cv2.circle(frame, (x,y), 3, (0,255,0))
-
+                        if lid == 1:
+                            mX=landmark.x*screenw
+                            mY=landmark.y*screenh
+                            pag.moveTo(mX,mY)
+                    clickList=[landmarks[145], landmarks[159]]
+                    if(clickList[0].y - clickList[1].y < mosueClickSens):
+                        pag.click()
+                        pag.sleep(1)
                 cv2.imshow('mouse program', frame)
                 cv2.waitKey(1)
         def justVolume(event):
@@ -71,7 +80,7 @@ def control(event):
         mainProgramRoot=Tk()
         mainProgramRoot.title('controling program')
         mainProgramRoot.iconbitmap('icons/mainProgramRoot.ico')
-        mainProgramRoot.geometry('%dx%d+%d+%d'%(400,200,600,400))
+        mainProgramRoot.geometry('%dx%d+%d+%d'%(1000,400,1500,1100))
         
         welcomeLabel=Label(master=mainProgramRoot, text='Welcome to the control program')
         welcomeLabel.pack()
@@ -151,9 +160,9 @@ def setting(event):
     setRoot.title("setting")
     setRoot.iconbitmap("icons\\setting.ico")
     
-    w=250
-    h=250
-    setRoot.geometry("%dx%d+%d+%d"%(w,h,200,200))
+    w=400
+    h=400
+    setRoot.geometry("%dx%d+%d+%d"%(w,h,500,600))
     setRoot.resizable(width=False, height=False)
     
     changeColorButton=Button(master=setRoot, text="change background color", bg="#FFF5EE")
@@ -197,7 +206,7 @@ exitButton.pack()
 # ---------------------------------------------------
 # ---------------------------------------------------
 # copyright frame
-copyFrame=Frame(master=mainRoot, bg="#778899", width=500, height=15)
+copyFrame=Frame(master=mainRoot, bg="#778899", width=1000, height=40)
 copyFrame.pack(side="bottom")
 copyFrame.pack_propagate(0)
 
@@ -211,13 +220,13 @@ def signUp(event):
     signUpRoot=Tk()
     signUpRoot.title("Sign Up")
     signUpRoot.iconbitmap("icons\\signUp.ico")
-    w=250
-    h=250
-    signUpRoot.geometry("%dx%d+%d+%d"%(w, h , 1000, 300))
+    w=700
+    h=700
+    signUpRoot.geometry("%dx%d+%d+%d"%(w, h , 2500, 800))
     
     # ---------------------------------------------------
     # name frame and label
-    newNameFrame=Frame(master=signUpRoot, width=500, height=30)
+    newNameFrame=Frame(master=signUpRoot, width=700, height=30)
     newNameFrame.pack(side="top")
     
     newNameLabel=Label(master=newNameFrame, text="Full name:")
@@ -229,7 +238,7 @@ def signUp(event):
     # ---------------------------------------------------
     # user name part
     
-    newUserNameFrame=Frame(master=signUpRoot, width=500, height=30)
+    newUserNameFrame=Frame(master=signUpRoot, width=700, height=30)
     newUserNameFrame.pack(side="top")
     
     newUserNameLabel=Label(master=newUserNameFrame, text="User name:")
@@ -242,7 +251,7 @@ def signUp(event):
     # ---------------------------------------------------
     # new password entry
     
-    newPassFrame=Frame(master=signUpRoot, width=500, height=30)
+    newPassFrame=Frame(master=signUpRoot, width=700, height=30)
     newPassFrame.pack(side="top")
     
     newPassLabel=Label(master=newPassFrame, text="password:")
@@ -253,7 +262,7 @@ def signUp(event):
     # -----------------------------------------------------
     # -----------------------------------------------------
     # mobile phone entry
-    newPhoneFrame=Frame(master=signUpRoot, width=500, height=30)
+    newPhoneFrame=Frame(master=signUpRoot, width=700, height=30)
     newPhoneFrame.pack(side="top")
     
     newPhoneLabel=Label(master=newPhoneFrame, text="phone number: +98")
@@ -332,7 +341,7 @@ def signUp(event):
     signUpRoot.mainloop()
 
 # signup frame
-signUpFrame=Frame(master=mainRoot, width=500, height=30)
+signUpFrame=Frame(master=mainRoot, width=1000, height=60)
 signUpFrame.pack(side='bottom')
 signUpFrame.pack_propagate(0)
 
@@ -346,16 +355,6 @@ signupButton.bind("<Button>", signUp)
 signupButton.pack(side="left")
 
 # ---------------------------------------------------
-# my mouse move function
-def mouseProcess(event):
-    pass
-
-mouseMoveButton=Button(master=mainRoot, text="mouse mode", bg="#FFF5EE", fg="black")
-mouseMoveButton.bind("<Enter>", lambda event: mouseMoveButton.config(bg="#F3E5AB"))
-mouseMoveButton.bind("<Leave>", lambda event: mouseMoveButton.config(bg="#FFF5EE"))
-mouseMoveButton.bind("<Button>", mouseProcess)
-# mouseMoveButton.pack()
-# ----------------------------------------------------
 
 
 mainRoot.mainloop()
