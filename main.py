@@ -93,12 +93,39 @@ def control(event):
             # open the camera
             cam=cv2.VideoCapture(0)
             startTime=time.time()
+            
+            # my hand find class for better and faster access
+            class handDetector:
+                def __init__(self, mode=False, maxHands=2, detectionCon=1, trackCon=0.5):
+                    self.m=mode
+                    self.mh=maxHands
+                    self.dc=detectionCon
+                    self.tc=trackCon
+                    
+                    self.AIhand=mp.solutions.hands
+                    self.hands=self.AIhand.Hands(self.m, self.mh, self.dc, self.tc)
+                    self.AIdraw=mp.solutions.drawing_utils
+                    self.tipIDs=[4,8,12,16,20]
+
+                def findHands(self, image, draw=True):
+                    changedColorimage=cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                    self.answer=self.hands.process(changedColorimage)
+
+                    if self.answer.multi_hand_landmarks:
+                        for landmark in self.answer.multi_hand_landmarks:
+                            if draw:
+                                self.AIdraw.draw_landmarks(image, landmark, self.AIhand.HAND_CONNECTIONS)
+                    return image
+
+            handAgent=handDetector()     
             while True:
-                if startTime-startTime > 10:
+                if time.time()-startTime > 10:
                     cv2.destroyAllWindows()
                     break
                 _, frame=cam.read()
                 frame=cv2.flip(frame, 1)
+                
+                frame=handAgent.findHands(frame)
                 
                 cv2.imshow('volume control', frame)
                 cv2.waitKey(1)
