@@ -5,6 +5,9 @@ from mysql.connector import Connect, Error
 import re, time, cv2
 import mediapipe as mp
 import pyautogui as pag
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AuidoUtilities, IAuidoEndpointVolume
 
 # ----------------------------------------------------------------------
 # my mainroot part
@@ -124,7 +127,7 @@ def control(event):
                     if self.answer.multi_hand_landmarks:
                         hand=self.answer.multi_hand_landmarks[handNo]
                         for landmarkId, landmark in enumerate(hand.landmark):
-                            h, w,c =img.shape
+                            h,_ ,_ =img.shape
                             if landmarkId==1:
                                 print(landmark.y * h)
 
