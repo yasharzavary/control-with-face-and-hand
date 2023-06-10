@@ -116,16 +116,29 @@ def control(event):
                             if draw:
                                 self.AIdraw.draw_landmarks(image, landmark, self.AIhand.HAND_CONNECTIONS)
                     return image
+                def findLandmarkPosition(self, img, handNo=0, draw=True):
+                    xList = []
+                    yList = []
+                    bboxList = []
+                    self.landmarkList=[]
+                    if self.answer.multi_hand_landmarks:
+                        hand=self.answer.multi_hand_landmarks[handNo]
+                        for landmarkId, landmark in enumerate(hand.landmark):
+                            h, w,c =img.shape
+                            if landmarkId==1:
+                                print(landmark.y * h)
 
+                        
             handAgent=handDetector()     
             while True:
-                if time.time()-startTime > 10:
+                if time.time()-startTime > 30:
                     cv2.destroyAllWindows()
                     break
                 _, frame=cam.read()
                 frame=cv2.flip(frame, 1)
                 
                 frame=handAgent.findHands(frame)
+                handAgent.findLandmarkPosition(frame)
                 
                 cv2.imshow('volume control', frame)
                 cv2.waitKey(1)
