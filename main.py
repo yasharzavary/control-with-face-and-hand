@@ -7,10 +7,10 @@ import mediapipe as mp
 import pyautogui as pag
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AuidoUtilities, IAuidoEndpointVolume
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
-# ----------------------------------------------------------------------
 # my mainroot part
+# ----------------------------------------------------------------------
 mainRoot=Tk()
 mainRoot.iconbitmap('icons\\mainRoot.ico')
 mainRoot.title('controlling system')
@@ -105,11 +105,12 @@ def control(event):
                     self.dc=detectionCon
                     self.tc=trackCon
                     
+                    # AI for analysis the hand and control it
                     self.AIhand=mp.solutions.hands
                     self.hands=self.AIhand.Hands(self.m, self.mh, self.dc, self.tc)
                     self.AIdraw=mp.solutions.drawing_utils
-                    self.tipIDs=[4,8,12,16,20]
 
+                # my hand finder and drawer
                 def findHands(self, image, draw=True):
                     changedColorimage=cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                     self.answer=self.hands.process(changedColorimage)
@@ -130,19 +131,44 @@ def control(event):
                             h,_ ,_ =img.shape
                             if landmarkId==1:
                                 print(landmark.y * h)
+                                return float(landmark.y * h)
 
-                        
+            devices=AudioUtilities.GetSpeakers()
+            interface=devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+            volume=cast(interface, POINTER(IAudioEndpointVolume))
+            
+            setterVolume=-25.0
+            volume.SetMasterVolumeLevel(setterVolume, None) 
+            firstPosition=0
+            firstTime=True
+            
+            # my class for search the hands
             handAgent=handDetector()     
+            
             while True:
-                if time.time()-startTime > 30:
+                if time.time()-startTime > 10:
                     cv2.destroyAllWindows()
                     break
                 _, frame=cam.read()
                 frame=cv2.flip(frame, 1)
                 
                 frame=handAgent.findHands(frame)
-                handAgent.findLandmarkPosition(frame)
-                
+                if firstTime:
+                    firstPosition=handAgent.findLandmarkPosition(frame)
+                    firstTime=False
+                else:
+                    try:
+                        now=handAgent.findLandmarkPosition(frame)
+                        if (now - firstPosition) < -3:
+                            print('low')
+                        elif (now - firstPosition) > 3:
+                            print('high')
+                        else:
+                            print('in one place')
+                        firstPosition=now
+                    except:
+                        pass
+    
                 cv2.imshow('volume control', frame)
                 cv2.waitKey(1)
         # our main program root
