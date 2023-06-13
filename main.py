@@ -130,15 +130,14 @@ def control(event):
                         for landmarkId, landmark in enumerate(hand.landmark):
                             h,_ ,_ =img.shape
                             if landmarkId==1:
-                                print(landmark.y * h)
                                 return float(landmark.y * h)
 
             devices=AudioUtilities.GetSpeakers()
             interface=devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
             volume=cast(interface, POINTER(IAudioEndpointVolume))
             
-            setterVolume=-25.0
-            volume.SetMasterVolumeLevel(setterVolume, None) 
+            setterVolume=-15.0  
+            volume.SetMasterVolumeLevel(setterVolume, None)
             firstPosition=0
             firstTime=True
             
@@ -157,18 +156,17 @@ def control(event):
                     firstPosition=handAgent.findLandmarkPosition(frame)
                     firstTime=False
                 else:
-                    try:
-                        now=handAgent.findLandmarkPosition(frame)
+                    now=handAgent.findLandmarkPosition(frame)
+                    if now:
                         if (now - firstPosition) < -3:
-                            print('low')
+                            if setterVolume < 0:
+                                setterVolume+=1.0
+                                volume.SetMasterVolumeLevel(setterVolume, None)
                         elif (now - firstPosition) > 3:
-                            print('high')
-                        else:
-                            print('in one place')
+                            if setterVolume > -65:
+                                setterVolume-=1.0
+                                volume.SetMasterVolumeLevel(setterVolume, None)
                         firstPosition=now
-                    except:
-                        pass
-    
                 cv2.imshow('volume control', frame)
                 cv2.waitKey(1)
         # our main program root
