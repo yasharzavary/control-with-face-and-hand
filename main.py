@@ -41,9 +41,12 @@ passLabel.pack()
 passEntry=Entry(master=mainRoot)
 passEntry.pack()
 
+# my time value
+pageTime=10
 # control part
 # -------------------------------
 mosueClickSens=0.01
+volumeMoveSense=2
 def control(event):
     # our main program for controlling the computer
     def mainProgram():
@@ -57,7 +60,7 @@ def control(event):
             # make on loop for work on frames
             while True:
                 # time condition
-                if time.time() - firstTime >= 10:
+                if time.time() - firstTime >= pageTime:
                     cv2.destroyAllWindows()
                     break  
                 # reading the camera 
@@ -114,17 +117,15 @@ def control(event):
                 def findHands(self, image, draw=True):
                     changedColorimage=cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                     self.answer=self.hands.process(changedColorimage)
-
+                    # our drawer for hand
                     if self.answer.multi_hand_landmarks:
                         for landmark in self.answer.multi_hand_landmarks:
                             if draw:
                                 self.AIdraw.draw_landmarks(image, landmark, self.AIhand.HAND_CONNECTIONS)
                     return image
+                # our function for return y of landmark for control  
+                # and control volume with it
                 def findLandmarkPosition(self, img, handNo=0, draw=True):
-                    xList = []
-                    yList = []
-                    bboxList = []
-                    self.landmarkList=[]
                     if self.answer.multi_hand_landmarks:
                         hand=self.answer.multi_hand_landmarks[handNo]
                         for landmarkId, landmark in enumerate(hand.landmark):
@@ -132,10 +133,12 @@ def control(event):
                             if landmarkId==1:
                                 return float(landmark.y * h)
 
+            # our speaker part
             devices=AudioUtilities.GetSpeakers()
             interface=devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
             volume=cast(interface, POINTER(IAudioEndpointVolume))
             
+            # my setter part for volume
             setterVolume=-15.0  
             volume.SetMasterVolumeLevel(setterVolume, None)
             firstPosition=0
@@ -145,26 +148,32 @@ def control(event):
             handAgent=handDetector()     
             
             while True:
-                if time.time()-startTime > 10:
+                # my break time
+                if time.time()-startTime > pageTime:
                     cv2.destroyAllWindows()
                     break
+                # get frame from camera
                 _, frame=cam.read()
                 frame=cv2.flip(frame, 1)
                 
+                # my agent for find hand and get dta from it to change
                 frame=handAgent.findHands(frame)
+                # i fit is first time, it will just add the hand data
+                # to one value for control in next parts
                 if firstTime:
                     firstPosition=handAgent.findLandmarkPosition(frame)
                     firstTime=False
                 else:
-                    now=handAgent.findLandmarkPosition(frame)
-                    if now:
+                    # our hand control part, if it get lower and higher, change the volume
+                    if handAgent.findLandmarkPosition(frame):
+                        now=handAgent.findLandmarkPosition(frame)
                         if (now - firstPosition) < -3:
                             if setterVolume < 0:
-                                setterVolume+=1.0
+                                setterVolume+=volumeMoveSense
                                 volume.SetMasterVolumeLevel(setterVolume, None)
                         elif (now - firstPosition) > 3:
                             if setterVolume > -65:
-                                setterVolume-=1.0
+                                setterVolume-=volumeMoveSense
                                 volume.SetMasterVolumeLevel(setterVolume, None)
                         firstPosition=now
                 cv2.imshow('volume control', frame)
@@ -175,6 +184,7 @@ def control(event):
         mainProgramRoot.iconbitmap('icons/mainProgramRoot.ico')
         mainProgramRoot.geometry('%dx%d+%d+%d'%(1000,400,1500,1100))
         
+        # our wellcome label for main program page
         welcomeLabel=Label(master=mainProgramRoot, text='Welcome to the control program')
         welcomeLabel.pack()
         
@@ -262,6 +272,7 @@ def setting(event):
         mouseSensRoot=Tk()
         mouseSensRoot.title('sens change')
         mouseSensRoot.geometry('%dx%d+%d+%d'%(600,200,400,900))
+        mouseSensRoot.iconbitmap('icons\\mouseset.ico')
         
         newSensFrame=Frame(master=mouseSensRoot)
         newSensFrame.pack(side='top')
@@ -285,7 +296,46 @@ def setting(event):
         mouseSensRoot.mainloop()
     
     def selectVolumeSensivity(event):
-        pass
+        def changer(event):
+            newSense=setVolumeEntry.get()
+            if re.search(r'[^0-9]', newSense):
+                messagebox.showerror('Error', 'you must use integer number for sense')
+            else:
+                try:
+                    newSense=int(newSense)
+                    if newSense > 65 or newSense < 0:
+                        messagebox.showerror('Error', 'you must select integer number between 0 and 65')
+                except Error as err:
+                    print(err)
+                    messagebox.showerror('Error','Error happened, please control your number')
+        setVolumeRoot=Tk()
+        setVolumeRoot.title('volume sense')
+        setVolumeRoot.geometry('%dx%d+%d+%d'%(600,200,400,900))
+        setVolumeRoot.iconbitmap('icons\\volumeset.ico')
+           
+        setVolumeLabel=Label(master=setVolumeRoot, text='set volume increase sense')
+        setVolumeLabel.pack(side='top')
+        
+        
+        setVolumeFrame=Frame(master=setVolumeRoot, width=600, height=40)
+        setVolumeFrame.pack(side='top')
+        setVolumeFrame.pack_propagate(0)
+        
+        setVolumeInfo=Label(master=setVolumeFrame, text='new sense(0 to 65) = ')
+        setVolumeInfo.pack(side='left')
+        
+        setVolumeEntry=Entry(master=setVolumeFrame)
+        setVolumeEntry.pack(side='right')
+        
+        setVolumeButton=Button(master=setVolumeRoot, text='change')
+        setVolumeButton.bind("<Enter>", lambda event: setVolumeButton.config(bg="#F3E5AB"))
+        setVolumeButton.bind("<Leave>", lambda event: setVolumeButton.config(bg="#FFF5EE"))
+        setVolumeButton.bind("<Button>", changer)
+        setVolumeButton.pack()
+        
+        setVolumeRoot.mainloop()
+    
+    
     # setRoot 
     setRoot=Tk()
     setRoot.title("setting")
