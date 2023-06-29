@@ -9,6 +9,22 @@ from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
+"""_summary_
+    priject name: controling volume and mouse with hand and eye
+    summary:
+        you can use this product for control your PC volume with hand and control mouse with your hand
+        it have one sign up part and it connected to the database(mysql), it have setting part too...
+        in set part you can change the sens of the mouse and volume changs
+    thecs that we use in this project:
+            1.tkinter for our GUI
+            2.mysql for our database
+            3.regex used for controlling the name and pass
+            4.time for get limit the usage of the each part
+            5.mediapipe is our main module for find hand and eye
+            6.pyautogui for set the good fraphics for tkinter
+            7.ctypes and comtypes and pycaw is for changing our volume
+"""
+
 # my mainroot part
 # ----------------------------------------------------------------------
 mainRoot=Tk()
@@ -167,14 +183,17 @@ def control(event):
                     # our hand control part, if it get lower and higher, change the volume
                     if handAgent.findLandmarkPosition(frame):
                         now=handAgent.findLandmarkPosition(frame)
+                        # if now is come down, it will down the volume
                         if (now - firstPosition) < -3:
                             if setterVolume < 0:
                                 setterVolume+=volumeMoveSense
                                 volume.SetMasterVolumeLevel(setterVolume, None)
+                        # and here it will high the volume
                         elif (now - firstPosition) > 3:
                             if setterVolume > -65:
                                 setterVolume-=volumeMoveSense
                                 volume.SetMasterVolumeLevel(setterVolume, None)
+                        # we set the position to the now...
                         firstPosition=now
                 cv2.imshow('volume control', frame)
                 cv2.waitKey(1)
@@ -221,10 +240,15 @@ def control(event):
         messagebox.showerror('Error', 'uername or password can\'t be empty')  
     else:
         try:
+            # connect to server
             with Connect(user='root', port=3306, password='Yasharzavary360', database='computercontrol') as conn:
+                # set the cursor
                 sqlCursor=conn.cursor(buffered=True)
+                # select all people from database
                 sqlCursor.execute("select * from person")
+                # go on the list of people and control name and pass
                 for i in sqlCursor:
+                    # if it is ok, it will break the for and go to the main part
                     if i[2]==controlName and i[3]==controlPass:
                         isOk=True
                         break
@@ -260,6 +284,7 @@ def setting(event):
             def changer():
                 global mosueClickSens
                 mosueClickSens=float(newSens)
+            # control the new sense with standards
             if newSens=='':
                 messagebox.showerror('Error', 'sens can\'t be empty')  
             elif re.search(r"[!\"#$%&'()*,/:;<=>?@[\]^_`{|}~ A-z a-z]", newSens):
@@ -298,10 +323,12 @@ def setting(event):
     def selectVolumeSensivity(event):
         def changer(event):
             newSense=setVolumeEntry.get()
+            # control the new volume sense
             if re.search(r'[^0-9]', newSense):
                 messagebox.showerror('Error', 'you must use integer number for sense')
             else:
                 try:
+                    # change the volume sense and select to the new sense
                     newSense=int(newSense)
                     if newSense > 65 or newSense < 0:
                         messagebox.showerror('Error', 'you must select integer number between 0 and 65')
